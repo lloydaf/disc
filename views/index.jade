@@ -3,3 +3,9 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  p Click on the button to get started
+  button(id="page1button" onclick="next()") Start
+  script.
+    var next = function() {
+      window.location.href = 'page1';
+    }

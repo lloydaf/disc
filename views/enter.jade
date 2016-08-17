@@ -1,0 +1,81 @@
+extends layout
+block content
+	h1 Enter Data for Page #{pagenum}
+	form#enterpageform(name="enterpage", method="post", action="/addpage")
+		table#entertable
+			thead
+				tr
+					th Name
+					th Most
+					th Least
+			tbody		
+				tr
+					td 
+						input#row1text(type="text", placeholder="row1")
+					td 
+						select#row1most
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+					td 
+						select#row1least
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+				tr
+					td 
+						input#row2text(type="text", placeholder="row2")
+					td 
+						select#row2most
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+					td 
+						select#row2least
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+				tr
+					td 
+						input#row3text(type="text", placeholder="row3")
+					td 
+						select#row3most
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+					td 
+						select#row3least
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+				tr
+					td 
+						input#row4text(type="text", placeholder="row4")
+					td 
+						select#row4most
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+					td 
+						select#row4least			
+							option(value="Z" selected) Z
+							option(value="SQ") SQ
+							option(value="TRI") TRI
+							option(value="STAR") STAR
+							option(value="N") N
+		input#pageno(type="hidden" value=pagenum)					
+		input#submit(type="submit" value="submit") 					
