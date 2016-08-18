@@ -1,0 +1,16 @@
+extends layout
+
+block content
+	h1 Login
+	p Welcome. Kindly Enter your username and password to login.
+	form#loginform(action="/users/validate" method="post")
+		input#usernameform(type="text" name="usernameform" placeholder="Username" required)
+		p
+		input#passwordform(type="password" name="passwordform" placeholder="Password" minlength="8" maxlength="32" required)
+		p
+		input#submit(value="submit" type="submit")
+	p
+		span Not registered yet? Click 
+		span
+			a(href="/users/register") here
+		span  to register

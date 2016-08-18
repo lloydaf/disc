@@ -1,0 +1,36 @@
+extends layout
+block content
+	h1 Page #{pagenum}
+	p Select one option each from both most and least
+	form#selectedform(action="update" method="post")
+		table#entertable
+			thead
+				tr
+					th Name
+					th Most
+					th Least
+			tbody
+				tr
+					td#row1text #{row1text}
+					td#row1most 
+						input(type="checkbox" value="#{row1most}")
+					td#row1least 
+						input(type="checkbox" value="#{row1least}")
+				tr
+					td#row2text #{row2text}
+					td#row2most 
+						input(type="checkbox" value="#{row2most}")
+					td#row2least 
+						input(type="checkbox" value="#{row2least}")
+				tr
+					td#row3text #{row3text}
+					td#row3most
+						input(type="checkbox" value="#{row3most}")
+					td#row3least
+						input(type="checkbox" value="#{row3least}")
+				tr
+					td#row4text #{row4text}
+					td#row4most
+						input(type="checkbox" value="#{row4most}")
+					td#row4least
+						input(type="checkbox" value="#{row4least}")
