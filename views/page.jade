@@ -13,24 +13,77 @@ block content
 				tr
 					td#row1text #{row1text}
 					td#row1most 
-						input(type="checkbox" value="#{row1most}")
+						input(name="most" class="most" type="checkbox" value="#{row1most}")
 					td#row1least 
-						input(type="checkbox" value="#{row1least}")
+						input(name="least" class="least" type="checkbox" value="#{row1least}")
 				tr
 					td#row2text #{row2text}
 					td#row2most 
-						input(type="checkbox" value="#{row2most}")
+						input(name="most" class="most" type="checkbox" value="#{row2most}")
 					td#row2least 
-						input(type="checkbox" value="#{row2least}")
+						input(name="least" class="least" type="checkbox" value="#{row2least}")
 				tr
 					td#row3text #{row3text}
 					td#row3most
-						input(type="checkbox" value="#{row3most}")
+						input(name="most" class="most" type="checkbox" value="#{row3most}")
 					td#row3least
-						input(type="checkbox" value="#{row3least}")
+						input(name="least" class="least" type="checkbox" value="#{row3least}")
 				tr
 					td#row4text #{row4text}
 					td#row4most
-						input(type="checkbox" value="#{row4most}")
+						input(name="most" class="most" type="checkbox" value="#{row4most}")
 					td#row4least
-						input(type="checkbox" value="#{row4least}")
+						input(name="least" class="least" type="checkbox" value="#{row4least}")
+		input(type="hidden" name="pagenum" value="#{pagenum}")				
+	p
+		button#next(type="float-left submit-button") Next
+	p
+		button#reset(type="float-left submit-button") Reset	
+	script(type="text/javascript" src="javascripts/jquery.js")
+	script(type="text/javascript").
+		var most_count=0;
+		var least_count=0;
+		$(document).ready(function(){
+			$('[type="checkbox"][class="most"]').change(function(){
+				if(this.checked){
+					if(most_count==0){
+						most_count++;
+					}
+					else{
+						alert('Select just one option from most!!');
+						$(this).prop('checked',false);
+					}
+				}
+				else{
+					most_count--;
+				}
+				
+			});
+			$('[type="checkbox"][class="least"]').change(function(){
+				if(this.checked){			
+					if(least_count==0){
+						least_count++;
+					}
+					else{
+						alert('Select just one option from least!!');
+						$(this).prop('checked',false);	
+					}
+				}
+				else{
+					least_count--;
+				}
+				
+			});
+			$('#next').click(function(){
+				if(most_count==0||least_count==0){
+					alert('You have to select atleast one option from both most and least!!')
+				}
+				else{
+					$('#selectedform').submit();
+				}
+			});
+			$('#reset').click(function(){
+				window.location.replace('/');
+			});
+		});
+
