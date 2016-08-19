@@ -8,6 +8,7 @@ router.get('/', function(req, res, next) {
 	++pageno;
 	var db = req.db;
 	db.collection('map').drop();
+	db.collection('count').drop();
 	res.render('index', { title: 'DISC' });
 });
 router.get('/page', function(req, res){
@@ -46,10 +47,10 @@ router.post('/update', function(req, res){
 	var db = req.db;
 	var query = {};
 	query["pageno"] = pagenum.toString();
-	collection = db.collection('map');
+	var collection = db.collection('map');
 	collection.findOne(query, function(err, values){
 		if(values){
-			res.send('Error!');
+			res.send("Error!");
 		}
 		else{
 			var map = db.collection('map');
@@ -64,4 +65,99 @@ router.post('/update', function(req, res){
 	});
 });
 
+router.get('/results', function(req, res, next){
+	if(pageno<29){
+		res.send('Error');
+	}
+	else{
+		var SQ_most = 0;
+		var TRI_most = 0;
+		var STAR_most = 0;
+		var Z_most = 0;
+		var N_most = 0;
+		var SQ_least = 0;
+		var TRI_least = 0;
+		var STAR_least = 0;
+		var Z_least = 0;
+		var N_least = 0;
+		var db = req.db;
+		var page = 0;
+		var query = {};
+		var map = db.collection('map');
+		while(page<29){
+			for(page = 0; page < 29; page++){
+				query["pageno"] = page.toString();
+				map.findOne(query, function(err, data){
+					switch(data.most){
+						case "SQ" :
+							++SQ_most;
+							break;
+						case "TRI" :
+							++TRI_most;
+							break;
+						case "STAR" :
+							++STAR_most;
+							break;
+						case "Z" :
+							++Z_most;
+							break;
+						case "N" :
+							++N_most;
+							break;
+						default :
+							res.send('Error');
+					}
+					switch(data.least){
+						case "SQ" :
+							++SQ_least;
+							break;
+						case "TRI" :
+							++TRI_least;
+							break;
+						case "STAR" :
+							++STAR_least;
+							break;
+						case "Z" :
+							++Z_least;
+							break;
+						case "N" :
+							++N_least;
+							break;
+						default :
+							res.send('Error');
+					}
+					var count = db.collection('count');
+					count.update({},{
+						"SQ_most" : SQ_most,
+						"TRI_most" : TRI_most,
+						"STAR_most" : STAR_most,
+						"Z_most" : Z_most,
+						"N_most" : N_most,
+						"SQ_least" : SQ_least,
+						"TRI_least" : TRI_least,
+						"STAR_least" : STAR_least,
+						"Z_least" : Z_least,
+						"N_least" : N_least
+					},{ upsert : true });
+				});
+			}
+			var count = db.collection('count');
+			count.findOne(function(err, data){
+				res.render('results', {
+					"SQ_most" : data.SQ_most,
+					"TRI_most" : data.TRI_most,
+					"STAR_most" : data.STAR_most,
+					"Z_most" : data.Z_most,
+					"N_most" : data.N_most,
+					"SQ_least" : data.SQ_least,
+					"TRI_least" : data.TRI_least,
+					"STAR_least" : data.STAR_least,
+					"Z_least" : data.Z_least,
+					"N_least" : data.N_least
+				});
+			});
+			
+		}	
+	}
+});
 module.exports = router;
