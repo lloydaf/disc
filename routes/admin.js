@@ -5,6 +5,14 @@ router.get('/', function(req, res, next){
 	res.render('enter',{ pagenum : '1' });
 });
 
+router.get('/chart_enter',function(req, res, next){
+    res.render('chart_enter');
+});
+
+router.post('/update_chart', function(req, res){
+    //code to update chart in canvas here.
+});
+
 /* POST to Add User Service */
 router.post('/enterpage', function(req, res){
 

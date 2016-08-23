@@ -1,0 +1,23 @@
+extends layout
+block content
+	p value #{value}
+	form#chartenter(method="post" action="/admin/update_chart")
+		table#mocktable
+			thead
+				tr
+					th D
+					th I
+					th S
+					th C
+			tbody
+				tr
+					td
+						input#D_in(type="text")
+					td
+						input#I_in(type="text")
+					td
+						input#S_in(type="text")
+					td
+						input#C_in(type="text")
+		input#val(type="hidden" value="#{value}")				
+		input#submit(type="submit" value="submit")
