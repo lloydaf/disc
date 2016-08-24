@@ -6,11 +6,32 @@ router.get('/', function(req, res, next){
 });
 
 router.get('/chart_enter',function(req, res, next){
-    res.render('chart_enter');
+    res.render('chart_enter',{"value" : 1 });
 });
 
 router.post('/update_chart', function(req, res){
-    //code to update chart in canvas here.
+    var db = req.db;
+    var chart = db.collection('chart');
+    var chart_details = {
+        "val" : req.body.val,
+        "D" : req.body.D,
+        "I" : req.body.I,
+        "S" : req.body.S,
+        "C" : req.body.C
+    };
+    chart.insert(chart_details, function(err, data){
+        if(err){
+            res.send("Sorry, error!");
+        }
+        else{
+            if(req.body.val<28){
+                res.render('chart_enter', { "value" : ++req.body.val });
+            }
+            else{
+                res.send("Complete!");
+            }
+        }
+    });
 });
 
 /* POST to Add User Service */

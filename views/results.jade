@@ -27,4 +27,26 @@ block content
 				td #{STAR_least}				
 				td #{N_least}
 	p 			
-	p Thank you for your patience!			
+	canvas#graph(width="600" height="600") 
+	p Thank you for your patience!
+	script(type="text/javascript" src="javascripts/jquery.js")
+	script(type="text/javascript").
+		var graph = document.getElementById("graph");
+		var draw = graph.getContext("2d");
+		draw.moveTo(50,50);
+		draw.lineTo(50,550);
+		draw.stroke();
+		draw.lineTo(550,550);
+		draw.stroke();
+		draw.font = "15px Arial";
+		draw.strokeText("D",150,575);
+		draw.strokeText("I",250,575);
+		draw.strokeText("S",350,575);
+		draw.strokeText("C",450,575);
+		draw.moveTo(#{xD},#{yD});
+		draw.lineTo(#{xI},#{yI});
+		draw.stroke();
+		draw.lineTo(#{xS},#{yS});
+		draw.stroke();
+		draw.lineTo(#{xC},#{yC});
+		draw.stroke();
