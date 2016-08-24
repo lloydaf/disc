@@ -9,15 +9,14 @@ var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/disc');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var admin = require('./routes/admin');
+var index = require('./routes/index');
+//var users = require('./routes/users'); <-- In the removed folder, for adding a user layer. Not implemented.
+//var admin = require('./routes/admin'); <-- In the removed folder, for changing the page backend templates.
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -32,9 +31,9 @@ app.use(function(req,res,next){
     next();
 });
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/admin',admin);
+app.use('/', index);
+//app.use('/users', users); <-- Commented variable
+//app.use('/admin',admin); <-- Commented variable
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

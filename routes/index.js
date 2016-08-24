@@ -2,13 +2,15 @@ var express = require('express');
 var router = express.Router();
 var pageno=0;
 
-/* GET home page. */
+/* GET home page. Displays the Welcome to DISC page*/
 router.get('/', function(req, res, next) {
 	pageno=0;
 	++pageno;
 	var db = req.db;
+	//clearing map and count tables
 	db.collection('map').drop();
 	db.collection('count').drop();
+	//initialising variables to 0
 	var SQ_most = 0;
 	var TRI_most = 0;
 	var STAR_most = 0;
@@ -22,6 +24,7 @@ router.get('/', function(req, res, next) {
 	var db = req.db;
 	var page = 0;
 	var query = {};
+	//inserts response template to database
 	var count = db.collection('count');
 	count.insert({
 		"value" : "1",
@@ -39,35 +42,36 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'DISC' });
 });
 router.get('/page', function(req, res){
-	if(pageno==29){
+	if(pageno==29){//if analysis is complete
 		res.render('complete');
 	}
 	else{	
 		var db = req.db;
 		var query = {};
 		query["pageno"] = pageno.toString();
-		db.collection('pagedata').findOne(query, function(err, values){
-		var locals = {
-			"pagenum" : pageno,
-			"row1text" : values.data.row1text,
-			"row1most" : values.data.row1most,
-			"row1least" : values.data.row1least,
-			"row2text" : values.data.row2text,
-			"row2most" : values.data.row2most,
-			"row2least" : values.data.row2least,
-			"row3text" : values.data.row3text,
-			"row3most" : values.data.row3most,
-			"row3least" : values.data.row3least,
-			"row4text" : values.data.row4text,
-			"row4most" : values.data.row4most,
-			"row4least" : values.data.row4least
-		};	
-		res.render('page', locals);
+		db.collection('pagedata').findOne(query, function(err, values){ 
+		//get pagedata and generate DISC page dynamically depending on where you are in the test	
+			var locals = {
+				"pagenum" : pageno,
+				"row1text" : values.data.row1text,
+				"row1most" : values.data.row1most,
+				"row1least" : values.data.row1least,
+				"row2text" : values.data.row2text,
+				"row2most" : values.data.row2most,
+				"row2least" : values.data.row2least,
+				"row3text" : values.data.row3text,
+				"row3most" : values.data.row3most,
+				"row3least" : values.data.row3least,
+				"row4text" : values.data.row4text,
+				"row4most" : values.data.row4most,
+				"row4least" : values.data.row4least
+			};	
+			res.render('page', locals);
 		});
 	}
 });
 
-router.post('/update', function(req, res){
+router.post('/update', function(req, res){//update database with options and progress to next page in test
 	var most = req.body.most;
 	var least = req.body.least;
 	var pagenum = req.body.pagenum;
@@ -79,13 +83,13 @@ router.post('/update', function(req, res){
 		if(values){
 			res.send("Error!");
 		}
-		else{
+		else{// insert into map
 			var map = db.collection('map');
 			map.insert({
 				"pageno" : pagenum,
 				"most" : most,
 				"least" : least 
-			});
+			}); //update count in count table
 			var count = db.collection('count');
 			switch(req.body.most){
 				case "SQ" :
@@ -184,7 +188,7 @@ router.post('/update', function(req, res){
 	});
 });
 
-router.get('/results', function(req, res){
+router.get('/results', function(req, res){//to see results
 	if(pageno < 29){
 		res.send('Error');
 	}
@@ -206,12 +210,12 @@ router.get('/results', function(req, res){
 			var TRI = TRI_most - TRI_least;
 			var STAR = STAR_most - STAR_least;
 			var SQ = SQ_most - SQ_least;
-			var chart = db.collection('chart');
+			var chart = db.collection('chart');//chart is a table to storing data plot chart in results page
 			chart.findOne({ "D" : Z.toString() },{ "val" : 1 },function(errorD, dataD){
 				chart.findOne({ "I" : SQ.toString() },{ "val" : 1 },function(errorI,dataI){
 					chart.findOne({ "S" : TRI.toString() },{ "val" : 1 },function(errorS, dataS){
 						chart.findOne({ "C" : STAR.toString() },{ "val" : 1 },function(errorC, dataC){
-							var xD = 150, xI = 250, xS = 350, xC = 450;
+							var xD = 150, xI = 250, xS = 350, xC = 450;//plots graphs dynamically depending on value from count
 							var yD = 550-(15*(dataD.val));
 							var yI = 550-(15*(dataI.val));
 							var yS = 550-(15*(dataS.val));
