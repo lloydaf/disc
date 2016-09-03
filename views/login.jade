@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	h1 Login
+	p Welcome. Kindly Enter your username and password to login.
+	form#loginform(action="/validate" method="post")
+		p Email:
+		input#usernameform(type="text" name="username" placeholder="Email" required)
+		p Password:
+		input#passwordform(type="password" name="password" placeholder="Password" maxlength="32" required)
+		p
+		input#submit(value="submit" type="submit")

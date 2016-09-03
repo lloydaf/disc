@@ -1,0 +1,16 @@
+extends layout
+block content
+	h1 Welcome!
+	p Kindly enter your name and email address in the fields given below.
+	form(method="post" action="/register")
+		p Name:
+		input(type="text" name="name" required)
+		p Email:
+		input(type="text" name="email" required)
+		p
+		input(type="submit" value="Go")
+	p 
+		span Already registered? Click 
+		span
+			a(href="/login") here
+		span  to login

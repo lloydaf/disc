@@ -1,0 +1,24 @@
+extends layout
+block content
+	h1 Admin Panel
+	p Welcome #{user}
+	p Select a user from the list to view result
+	form(action="/showres" method="post")
+		select#selectform(name="email" required)
+		p 
+			input(type="submit" value="See Results") 
+	script(src="/javascripts/jquery.js")
+	script.
+		$(document).ready(function(){			
+			var htmldata='<option value="" selected="selected" disabled>Select User</option>';
+			var data = !{JSON.stringify(datacount)};
+			var user = !{JSON.stringify(datauser)};
+			for(var i in data){
+				for(var j in user){
+					if(data[i].email==user[j].email){
+						htmldata+='<option value="'+user[j].email+'">'+user[j].data.name+'</option>';
+					}
+				}
+			}
+			$('#selectform').html(htmldata);
+		});

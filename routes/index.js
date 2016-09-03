@@ -4,12 +4,12 @@ var pageno=0;
 
 /* GET home page. Displays the Welcome to DISC page*/
 router.get('/', function(req, res, next) {
+	var sess = req.session;
 	pageno=0;
 	++pageno;
 	var db = req.db;
 	//clearing map and count tables
 	db.collection('map').drop();
-	db.collection('count').drop();
 	//initialising variables to 0
 	var SQ_most = 0;
 	var TRI_most = 0;
@@ -27,7 +27,7 @@ router.get('/', function(req, res, next) {
 	//inserts response template to database
 	var count = db.collection('count');
 	count.insert({
-		"value" : "1",
+		"email" : sess.email,
 		"SQ_most" : SQ_most,
 		"TRI_most" : TRI_most,
 		"STAR_most" : STAR_most,
@@ -39,7 +39,7 @@ router.get('/', function(req, res, next) {
 		"Z_least" : Z_least,
 		"N_least" : N_least
 		});
-	res.render('index', { title: 'DISC' });
+	res.render('index', { title: 'DISC', name: sess.name, email:sess.email, password:sess.password });
 });
 router.get('/page', function(req, res){
 	if(pageno==29){//if analysis is complete
@@ -72,6 +72,7 @@ router.get('/page', function(req, res){
 });
 
 router.post('/update', function(req, res){//update database with options and progress to next page in test
+	var sess = req.session;	
 	var most = req.body.most;
 	var least = req.body.least;
 	var pagenum = req.body.pagenum;
@@ -93,7 +94,7 @@ router.post('/update', function(req, res){//update database with options and pro
 			var count = db.collection('count');
 			switch(req.body.most){
 				case "SQ" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							SQ_most : 1
 						}
@@ -101,7 +102,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "TRI" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							TRI_most : 1
 						}
@@ -109,7 +110,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "STAR" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							STAR_most : 1
 						}
@@ -117,7 +118,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "Z" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							Z_most : 1
 						}
@@ -125,7 +126,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "N" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							N_most : 1
 						}
@@ -138,7 +139,7 @@ router.post('/update', function(req, res){//update database with options and pro
 			}
 			switch(req.body.least){
 				case "SQ" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							SQ_least : 1
 						}
@@ -146,7 +147,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "TRI" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							TRI_least : 1
 						}
@@ -154,7 +155,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "STAR" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							STAR_least : 1
 						}
@@ -162,7 +163,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "Z" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							Z_least : 1
 						}
@@ -170,7 +171,7 @@ router.post('/update', function(req, res){//update database with options and pro
 					});
 					break;
 				case "N" :
-					count.update({},{
+					count.update({"email" : sess.email },{
 						$inc : {
 							N_least : 1
 						}
@@ -183,69 +184,68 @@ router.post('/update', function(req, res){//update database with options and pro
 			}
 			
 			++pageno;
-			res.redirect('/page');
+			res.redirect('/disc/page');
 		}
 	});
 });
 
-router.get('/results', function(req, res){//to see results
-	if(pageno < 29){
-		res.send('Error');
-	}
-	else{
-		var db = req.db;
-		var query = {"value" : "1"};
-		db.collection('count').findOne(query, function(err, values){
-			var SQ_most = values.SQ_most;
-			var TRI_most = values.TRI_most;
-			var STAR_most = values.STAR_most;
-			var Z_most = values.Z_most;
-			var N_most = values.N_most;
-			var SQ_least = values.SQ_least;
-			var TRI_least = values.TRI_least;
-			var STAR_least = values.STAR_least;
-			var Z_least = values.Z_least;
-			var N_least = values.N_least;
-			var Z = Z_most - Z_least;
-			var TRI = TRI_most - TRI_least;
-			var STAR = STAR_most - STAR_least;
-			var SQ = SQ_most - SQ_least;
-			var chart = db.collection('chart');//chart is a table to storing data plot chart in results page
-			chart.findOne({ "D" : Z.toString() },{ "val" : 1 },function(errorD, dataD){
-				chart.findOne({ "I" : SQ.toString() },{ "val" : 1 },function(errorI,dataI){
-					chart.findOne({ "S" : TRI.toString() },{ "val" : 1 },function(errorS, dataS){
-						chart.findOne({ "C" : STAR.toString() },{ "val" : 1 },function(errorC, dataC){
-							var xD = 150, xI = 250, xS = 350, xC = 450;//plots graphs dynamically depending on value from count
-							var yD = 550-(15*(dataD.val));
-							var yI = 550-(15*(dataI.val));
-							var yS = 550-(15*(dataS.val));
-							var yC = 550-(15*(dataC.val));
-							res.render('results', {
-								"SQ_most" : SQ_most,
-								"TRI_most" : TRI_most,
-								"STAR_most" : STAR_most,
-								"Z_most" : Z_most,
-								"N_most" : N_most,
-								"SQ_least" : SQ_least,
-								"TRI_least" : TRI_least,
-								"STAR_least" : STAR_least,
-								"Z_least" : Z_least,
-								"N_least" : N_least,
-								"xD" : xD,
-								"yD" : yD,
-								"xI" : xI,
-								"yI" : yI,
-								"xS" : xS,
-								"yS" : yS,
-								"xC" : xC,
-								"yC" : yC
-							});
+router.all('/results', function(req, res){//to see results	
+	var db = req.db;
+	var sess = req.session;
+	var query = {"email" : sess.email };
+	db.collection('count').findOne(query, function(err, values){
+		var SQ_most = values.SQ_most;
+		var TRI_most = values.TRI_most;
+		var STAR_most = values.STAR_most;
+		var Z_most = values.Z_most;
+		var N_most = values.N_most;
+		var SQ_least = values.SQ_least;
+		var TRI_least = values.TRI_least;
+		var STAR_least = values.STAR_least;
+		var Z_least = values.Z_least;
+		var N_least = values.N_least;
+		var Z = Z_most - Z_least;
+		var TRI = TRI_most - TRI_least;
+		var STAR = STAR_most - STAR_least;
+		var SQ = SQ_most - SQ_least;
+		var chart = db.collection('chart');//chart is a table to storing data plot chart in results page
+		chart.findOne({ "D" : Z.toString() },{ "val" : 1 },function(errorD, dataD){
+			chart.findOne({ "I" : SQ.toString() },{ "val" : 1 },function(errorI,dataI){
+				chart.findOne({ "S" : TRI.toString() },{ "val" : 1 },function(errorS, dataS){
+					chart.findOne({ "C" : STAR.toString() },{ "val" : 1 },function(errorC, dataC){
+						var xD = 150, xI = 250, xS = 350, xC = 450;//plots graphs dynamically depending on value from count
+						var yD = 550-(15*(dataD.val));
+						var yI = 550-(15*(dataI.val));
+						var yS = 550-(15*(dataS.val));
+						var yC = 550-(15*(dataC.val));
+						res.render('results', {
+									"SQ_most" : SQ_most,
+									"TRI_most" : TRI_most,
+									"STAR_most" : STAR_most,
+									"Z_most" : Z_most,
+									"N_most" : N_most,
+									"SQ_least" : SQ_least,
+									"TRI_least" : TRI_least,
+									"STAR_least" : STAR_least,
+									"Z_least" : Z_least,
+									"N_least" : N_least,
+									"xD" : xD,
+									"yD" : yD,
+									"xI" : xI,
+									"yI" : yI,
+									"xS" : xS,
+									"yS" : yS,
+									"xC" : xC,
+									"yC" : yC,
+									"D" : Z,
+									"I" : SQ,
+									"S" : TRI,
+									"C" : STAR
 						});
 					});
 				});
-				
-			});	
-		});
-	}
+			});			
+		});	
+	});
 });
 module.exports = router;

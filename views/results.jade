@@ -43,6 +43,10 @@ block content
 		draw.strokeText("I",250,575);
 		draw.strokeText("S",350,575);
 		draw.strokeText("C",450,575);
+		draw.strokeText("#{D}",#{xD},(#{yD}-15));
+		draw.strokeText("#{I}",#{xI},(#{yI}-15));
+		draw.strokeText("#{S}",#{xS},(#{yS}-15));
+		draw.strokeText("#{C}",#{xC},(#{yC}-15));
 		draw.moveTo(#{xD},#{yD});
 		draw.lineTo(#{xI},#{yI});
 		draw.stroke();
@@ -50,3 +54,8 @@ block content
 		draw.stroke();
 		draw.lineTo(#{xC},#{yC});
 		draw.stroke();
+		var i=1;
+		for(i;i<29;++i){
+			draw.font = "14px Arial";
+			draw.strokeText(i.toString(),25,(550-(15*i)));
+		}

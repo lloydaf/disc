@@ -1,11 +1,14 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 Welcome to #{title}
+  p Hello #{name}, 
+  p Here are your login details:
+  p Username : #{email}
+  p Password : #{password}
   p Click on the button to get started
   button(id="page1button" onclick="next()") Start
   script.
     var next = function() {
-      window.location.href = '/page';
+      window.location.href = '/disc/page';
     }

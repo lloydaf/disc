@@ -1,0 +1,16 @@
+extends layout
+
+block content
+	h1 Register
+	p Hello, please enter your details in the corresponding boxes below
+	form#registerform(action="/register" method="post")
+		p First Name:
+		input#firstname(name="firstname" type="text" required)
+		p Last Name:
+		input#lastname(name="lastname" type="text" required)
+		p Username:
+		input#username(name="username" type="text" required)
+		p Password:
+		input#password(name="password" type="password" minlength="8" maxlength="32" required)
+		p
+		input(type="submit" value="submit")

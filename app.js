@@ -9,8 +9,10 @@ var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/disc');
 
+var session = require('express-session');
+
 var index = require('./routes/index');
-//var users = require('./routes/users'); <-- In the removed folder, for adding a user layer. Not implemented.
+var users = require('./routes/users');
 //var admin = require('./routes/admin'); <-- In the removed folder, for changing the page backend templates.
 var app = express();
 
@@ -24,15 +26,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(session({secret: 'secretcodehere', resave: true, saveUninitialized: true }));
 // Make our db accessible to our router
 app.use(function(req,res,next){
     req.db = db;
     next();
 });
 
-app.use('/', index);
-//app.use('/users', users); <-- Commented variable
+app.use('/', users);
+app.use('/disc', index); 
 //app.use('/admin',admin); <-- Commented variable
 
 // catch 404 and forward to error handler
